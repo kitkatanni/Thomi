@@ -8,8 +8,8 @@ FPS = 60
 SCALE = 20
 
 
-WORDS = ["love you", "Love You", "LOVE YOU"]
-CENTER_TEXT = " Love You "
+WORDS = ["love thomi", "Love Thomi", "LOVE THOMI"]
+CENTER_TEXT = " Love Thomi "
 COLORS = [
     (70, 130, 180),
     (30, 144, 255),  
