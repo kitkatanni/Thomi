@@ -1,0 +1,126 @@
+
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>For you ♡</title>
+
+<style>
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  min-height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  overflow: hidden;
+  font-family: Georgia, serif;
+  color: white;
+  text-align: center;
+  background: radial-gradient(
+    circle at center,
+    #542039, #1b0c19 65%, #08070b
+  );
+}
+
+.container {
+  padding: 25px;
+  z-index: 1;
+}
+
+.heart {
+  font-size: 110px;
+  animation: beat 1s infinite;
+  filter: drop-shadow(0 0 25px #ff4f91);
+}
+
+@keyframes beat {
+  0%, 100% { transform: scale(1); }
+  50% { transform: scale(1.18); }
+}
+
+h1 {
+  font-size: 34px;
+  font-weight: normal;
+  letter-spacing: 2px;
+}
+
+p {
+  color: #f4c8dc;
+  font-size: 17px;
+}
+
+button {
+  margin-top: 20px;
+  padding: 13px 24px;
+  border: 1px solid #ffb5d1;
+  border-radius: 30px;
+  color: white;
+  background: #b92d65;
+  font-size: 15px;
+  cursor: pointer;
+}
+
+button:hover {
+  background: #e34482;
+}
+
+.star {
+  position: absolute;
+  color: #ffd3e4;
+  animation: float 5s infinite ease-in-out;
+  opacity: 0.7;
+}
+
+@keyframes float {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-25px); }
+}
+</style>
+</head>
+
+<body>
+<div class="container">
+  <div class="heart">♡</div>
+  <h1>For you</h1>
+  <p>There's something special about you...</p>
+
+  <button id="play">♫ Play our song ♫</button>
+  <audio id="song" src="love_you.mp3" loop></audio>
+</div>
+
+<script>
+const song = document.getElementById("song");
+const button = document.getElementById("play");
+
+button.addEventListener("click", async () => {
+  if (song.paused) {
+    try {
+      await song.play();
+      button.textContent = "Ⅱ Pause song";
+    } catch (error) {
+      button.textContent = "Try playing again ♡";
+    }
+  } else {
+    song.pause();
+    button.textContent = "♫ Play our song ♫";
+  }
+});
+
+for (let i = 0; i < 25; i++) {
+  const star = document.createElement("span");
+  star.className = "star";
+  star.textContent = "✧";
+  star.style.left = Math.random() * 100 + "%";
+  star.style.top = Math.random() * 100 + "%";
+  star.style.fontSize = (10 + Math.random() * 18) + "px";
+  star.style.animationDelay = Math.random() * 5 + "s";
+  document.body.appendChild(star);
+}
+</script>
+</body>
+</html>
