@@ -1,0 +1,195 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>For Thomi</title>
+
+<style>
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    background: #081321;
+    min-height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    overflow: hidden;
+}
+
+canvas {
+    width: min(100vw, 750px);
+    height: auto;
+    display: block;
+}
+</style>
+</head>
+
+<body>
+
+<canvas id="corazon" width="750" height="600"></canvas>
+
+<script>
+
+const canvas = document.getElementById("corazon");
+const ctx = canvas.getContext("2d");
+
+const palabras = [
+    "LOVE", "FOREVER", "SWEETHEART",
+    "mylove", "BEAUTIFUL", "MY LOVE",
+    "DARLING", "PRECIOUS", "HEART",
+    "siempre", "te adoro", "KISSES",
+    "je t aime", "DREAM", "LOVE YOU"
+];
+
+// Forma matemática del corazón
+function dentroDelCorazon(x, y) {
+    return Math.pow(x*x + y*y - 1, 3)
+        - x*x*y*y*y <= 0;
+}
+
+// Generar solamente el contorno
+let puntos = [];
+
+const cx = 375;
+const cy = 290;
+const escalaX = 235;
+const escalaY = 205;
+
+for (let angulo = 0; angulo < Math.PI * 2; angulo += 0.003) {
+
+    let radio = 0;
+
+    for (let r = 0; r <= 1.5; r += 0.002) {
+
+        let x = r * Math.cos(angulo);
+        let y = r * Math.sin(angulo);
+
+        if (!dentroDelCorazon(x, y)) {
+            break;
+        }
+
+        radio = r;
+    }
+
+    if (radio > 0) {
+
+        let x = radio * Math.cos(angulo);
+        let y = radio * Math.sin(angulo);
+
+        puntos.push({
+            x: cx + x * escalaX,
+            y: cy - y * escalaY
+        });
+    }
+}
+
+// Palabras distribuidas uniformemente
+let letras = [];
+
+ctx.font = "bold 15px Georgia";
+
+let indice = 0;
+let distancia = 0;
+const espacio = 95;
+
+for (let i = 0; i < puntos.length; i++) {
+
+    if (distancia >= espacio) {
+
+        let palabra = palabras[indice % palabras.length];
+
+        letras.push({
+            x: puntos[i].x,
+            y: puntos[i].y,
+            palabra: palabra,
+            brillo: Math.random()
+        });
+
+        indice++;
+        distancia = 0;
+    }
+
+    if (i > 0) {
+        let dx = puntos[i].x - puntos[i - 1].x;
+        let dy = puntos[i].y - puntos[i - 1].y;
+
+        distancia += Math.sqrt(dx * dx + dy * dy);
+    }
+}
+
+// Animación
+let tiempo = 0;
+
+function animar() {
+
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+    tiempo += 0.035;
+
+    const pulso = 1 + Math.sin(tiempo) * 0.025;
+
+    ctx.save();
+
+    ctx.translate(cx, cy);
+    ctx.scale(pulso, pulso);
+    ctx.translate(-cx, -cy);
+
+    // Palabras del contorno
+    letras.forEach(letra => {
+
+        ctx.save();
+
+        ctx.font = "bold 15px Georgia";
+        ctx.textAlign = "center";
+        ctx.textBaseline = "middle";
+
+        ctx.shadowColor = "#ff003c";
+        ctx.shadowBlur = 12;
+
+        ctx.fillStyle = `rgba(255, 15, 55, ${
+            0.65 + letra.brillo * 0.35
+        })`;
+
+        ctx.fillText(
+            letra.palabra,
+            letra.x,
+            letra.y
+        );
+
+        ctx.restore();
+
+    });
+
+    ctx.restore();
+
+    // Nombre en el espacio vacío
+    ctx.save();
+
+    ctx.font = "bold 55px Georgia";
+    ctx.textAlign = "center";
+    ctx.textBaseline = "middle";
+
+    ctx.shadowColor = "#ff003c";
+    ctx.shadowBlur = 25;
+
+    ctx.fillStyle = "#ff1744";
+
+    ctx.fillText("THOMI", cx, cy);
+
+    ctx.restore();
+
+    requestAnimationFrame(animar);
+}
+
+animar();
+
+</script>
+
+</body>
+</html>
